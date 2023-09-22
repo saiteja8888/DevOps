@@ -80,3 +80,239 @@ ln -s Pictures/family_dog.jpg relative_picture_shortcut
 Note: Softlink works for directories.
 You can also softlink to files or directories on a different file system.
 
+#File Permissions
+ls -l
+
+#change group 
+chgrp [group_name] [file_name]
+chgrp wheel family_dog.jpg
+
+#To see which groups our current user belongs to?
+groups 
+
+#change owner
+# only root user can change the owner so use sudo
+sudo chown [new_owner] [file_name]
+sudo chown jane family_dog.jpg
+
+#change owner and group at the same time
+sudo chown [user]:[group] [file_name]
+sudo chown aaron:family family_dog.jpg 
+
+ls -l 
+-rwxrwxrwx --> first charecter indicates the file type 
+
+Identifier --> File Type 
+d --> Directory 
+- --> Regular File
+c --> Charecter Device
+| --> Link 
+s --> Socket File 
+
+#rwxrwxrwx --> first 3 user, second 3 group, third 3 others
+
+# For Files 
+Bit --> Purpose
+r --> Read File 
+w --> Write to File 
+x --> Execute(run)
+- --> No Permissions
+
+# For Directories
+Bit --> Purpose 
+r --> Read Directory 
+w --> Write to Directory 
+x --> Execute into 
+- --> No Permissions
+
+#Permissions are evaluated in a linear fashion from left to right
+Owner  Group  Others
+   ------------>
+
+#Change Permissions
+chmod Permissions file/directory 
+
+Add Permissions
+        Options   Examples
+User    u+        u+w, u+rw, u+rwx       
+Group   g+        g+w, g+rw, g+rwx 
+Others  o+        o+w, o+rw, o+rwx 
+
+Remove Permissions
+        Options   Examples
+Group   g-        g-w, g-rw, g-rwx 
+User    u-        u-w, u-rw, u-rwx       
+Others  o-        o-w, o-rw, o-rwx 
+
+Exact Permissions
+        Options   Examples
+Group   g=        g=w, g=rw, g=rwx 
+User    u=        u=w, u=rw, u=rwx       
+Others  o=        o=w, o=rw, o=rwx 
+
+ls -l
+
+#Add wrire permission to the owner 
+chmod u+w family_dog.jpg 
+
+# Remove Write Permission to the group 
+chmod g-w family_dog.jpg 
+
+# Remove read permission to the others 
+chmod o-r family_dog.jpg 
+
+#Set exact permissions 
+chmod g=r family_dog.jpg 
+chmod g=rw family_dog.jpg 
+
+# No permission to the group 
+chmod g= family_dog.jpg 
+
+#Chaining Permission
+ls -l 
+
+chmod u+rw,g=r,o= family_dog.jpg 
+
+chmod u=rw,g-w family_dog.jpg 
+
+#another command to check the permissions
+stat family_dog.jpg 
+
+#Changing permissios using octal value 
+rw-r-----
+rw-|r--|---
+110 100 000 --> converting binary to decimal
+ 6   4   0
+
+Binary  Decimal 
+000      0
+001      1
+010      2
+011      3
+100      4
+101      5
+110      6
+111      7
+
+or
+r --> 4
+w --> 2
+x --> 1
+- --> 0
+
+chmod 640 family_dog.jpg 
+
+#SUID, SGID and Sticky Bit 
+#SUID -> Set user identification bit 
+It means that when ever the file is executed it's going to be executed as the user ID of the owner instead of the user ID of the person who is running that file 
+
+touch suidfile
+ls -l suidfile 
+
+4664 --> first digit is suid 
+chmod 4664 suidfile 
+ls -l suidfile 
+-rwSrw-r-- --> in the place of the execute bit we have a capital S
+That lets us know that the SUID bit is enabled for the file 
+If anybody else were to be able to execute that file, it would be executed as the user aaron instead of that user who executed 
+
+chmod 4764 sudofile
+-rwsrw-r--  --> in the place of the execute bit we have a lowercae s
+
+Capital S --> SUID is enabled, but there is no execute permission.
+lowercase s --> Execute bit and the SUID bit are both set. 
+
+touch sgidfile
+ls -l sgidfile 
+
+chmod 2664 sgidfile 
+ls -l sgidfile
+-rw-rwSr-- --> Capital S 
+
+chmod 2674 sgidfile
+-rw-rwsr-- --> lowercase s 
+
+#find files that may have the suid bit or the sgidbit set.
+
+find . -perm /4000
+
+find . --perm /2000
+
+# find files that have either SUID set, SGID set or both 
+find . -perm /6000
+
+#Sticky bit 
+The sticky bit works on the directory. With sticky bit set on a directory, all the files in the directory can only be deleted or renamed by the file owners only or the root.
+
+mkdir stickydir 
+
+chmod 1777 stickydir
+ls -ld stickeydir
+drwxrwxrwt
+
+T --> Only Sticky bit 
+t --> both sticky bit and execute bit 
+
+chmod 1666 stickydir
+drwxrwxrwT
+
+#Search file in linux
+find /usr/share/ --name '*.jpg'
+
+find /lib64/ -size +10M
+
+find /dev/ --mmin -1
+
+find [path_to_directory] [search_parameters]
+
+find /bin/ -name file1.txt
+
+#search in current directory 
+find -name file1.txt 
+
+#case in sensitive
+find -iname felix
+
+#files thats with f 
+find -iname 'f*'
+
+#mmin --> modified minute 
+find -mmin [minutes]
+
+find files modified in last 5th minute 
+find -mmin 5 
+
+find files modified in last 5 minutes 
+find -mmin -5
+
+find files modified before 5 minutes and out into infinity
+find -mmin +5
+#modification means creation or edition of the files.
+Modification = create or edit 
+modified time !=change time 
+modified time refers to the time when contents have been modified.
+change time refers to the time when metadata has been changed.
+
+find -mtime 2
+0 --> last 24hrs
+1 --> 24hrs to 48hrs
+2 --> 48hrs to 72hrs
+..
+
+find cmin -5
+
+c bytes
+k kilobytes
+M megabytes
+G gigabytes
+
+find -size [size]
+find -size 512k
+
+#
+
+
+
+
+
+
