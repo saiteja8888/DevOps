@@ -256,7 +256,7 @@ t --> both sticky bit and execute bit
 chmod 1666 stickydir
 drwxrwxrwT
 
-#Search file in linux
+#Search files in linux
 find /usr/share/ --name '*.jpg'
 
 find /lib64/ -size +10M
@@ -287,6 +287,7 @@ find -mmin -5
 
 find files modified before 5 minutes and out into infinity
 find -mmin +5
+
 #modification means creation or edition of the files.
 Modification = create or edit 
 modified time !=change time 
@@ -308,8 +309,396 @@ G gigabytes
 
 find -size [size]
 find -size 512k
+find -size +512K (greater than 512K)
+find -size -512K (lesser than 512K)
 
-#
+find -size [size]
+find -name 'f*'
+
+find -size 512K 
+
+file starts with letter s and 512k 
+find -name 'f*' -size 512k
+
+file starts with letter s or 512k 
+find -name 'f*' -o -size 512k
+
+#Not operator
+find -not -name 'f*'
+
+find \! -name 'f*'
+
+#search based on permissions 
+664 = u+rw,g+rw,o+r 
+
+#find files with exactly 664 permissions 
+find -perm 664
+
+#find files with at least 664 permissions 
+find -perm -664
+
+#find files with any of these permissions
+find -perm /664
+
+#Alternative way to write above commands 
+find -perm u=rw,g=rw,o=r 
+find -perm -u=rw,g=rw,o=r 
+find -perm /u=rw,g=rw,o=r 
+
+find -perm 600
+find -perm -100
+find \! -perm -o=r
+
+find -perm /u=r,g=r,o=r 
+
+#Compare and manipulate file content 
+cat /home/users.txt 
+
+tac /home/users.txt 
+
+tail /home/users.txt 
+
+-n 20 = last 20 lines 
+tail -n 20 /home/users.txt 
+
+head /home/users.txt 
+
+head -n 20 /home/users.txt 
+
+find and replace
+g=global
+sed 's/canda/canada/g' userinfo.txt 
+
+-i is short for --in-place 
+sed -i 's/canda/canada/g' userinfo.txt 
+
+-d = delimeter, -f field
+cut -d ' ' -f 1 userinfo.txt 
+
+cut -d ',' -f 3 userinfo.txt > countries.txt 
+
+uniq countries.txt 
+
+sort countries | uniq
+
+diff file1 file2
+
+diff -c file1 file2 
+
+diff -y file1 file2 == sdiff file1 file2 
+
+#pagers and vi 
+less filename.txt 
+
+to search in a file 
+/search word
+-i to ignore case 
+shift + N to move upward 
+Q to exit the pager
+
+more filename.txt 
+space - move a page at atime
+Q - to exit 
+
+#vim vi improved
+vi filename 
+
+-i to insert
+esc - to go to command mode 
+/ - to search
+/\c - case insensitive
+
+:linenumber - take the cursor to line 3
+yy - copy 
+p - paste 
+dd - cut 
+p - paste 
+
+:q! - exit
+:wq! - to write and exit 
+
+grep 'CentOS' /etc/os-release
+
+grep -i 'centos' /etc/os-release 
+
+-r = recursive
+grep -r 'centos' /etc/
+
+grep -ir 'centos' /etc/
+
+sudo  grep -ir 'centos' /etc/
+
+-v = invert match
+grep -vi 'centos' /etc/os-release 
+
+grep -i 'red' /etc/os-release 
+
+grep -wi 'red' /etc/os-release 
+
+-o = --only-matching
+grep -oi 'centos' /etc/os-release 
+
+#Analyze text using basic regular expressions
+^ - The line begins with 
+$ - The line ends with 
+. - Match any one charecter
+* - Match the previous element 0 or more times
++ - Match the previous element 1 or more times
+{} - Previous element can exist "this many" times
+? - Make the previous element optional
+| - Match one thing or the other
+[] - [a-z] [0-9] [abz954] - Ranges or sets
+() - sub expressions 
+[^] - Negated Ranges or sets 
+
+cat names.txt 
+
+grep 'sam' names.txt 
+grep '^sam' names.txt 
+grep '7$' names.txt 
+grep 'mail$' names.txt 
+grep 'c.t' names.txt 
+grep -w 'c.t' names.txt 
+grep '.' names.txt 
+grep '\.' names.txt 
+grep -r 'let*' /etc/
+grep -r '/.*/' etc/
+grep -r '0+' /etc/
+grep -r '0\+' /etc/ 
+
+#Extended regular expressions 
+grep -Er '0+' /etc/ = egrep -r '0+' /etc/ 
+egrep -r '0{3}' /etc/
+egrep -r 'Disabled?' /etc/
+
+0{min.max} - 0 must exists atleast min times, atmost max times 
+egrep -r '0{3,5}' /etc/
+
+egrep -r 'enabled|disabled' /etc/
+
+egrep -r 'enabled?|disabled?' /etc/
+egrep -r 'c[au]t' /etc/
+egrep -r '/dev/[a-z]*' /etc/
+egrep -r '/dev/[a-z]*[0-9]' /etc/
+egrep -r '/dev/[a-z]*[0-9]?' /etc/
+
+egrep -r '/dev/([a-z]*[0-9]?)*' /etc/
+egrep -r '/dev/(([a-z]|[A-z])*[0-9]?)*' /etc/
+
+egrep -r 'http[^s]' /etc/
+
+egrep -r '/[^a-z]' /etc/
+
+regexr.com
+
+#Archive, backup, compress, unpack, uncompress files
+Archive - Pack all of those files and directories into a single file like backup.tar 
+compress - backup.tar.gz
+
+tar = tape archive 
+Tar was used to prepare data that'd be sent out to these tapes.
+even if this backup format is rarely used these days, tar still is a popular tool because it does it's job well.
+
+.tar file = tarball
+
+#To display contents of the archive.
+--list or -t or t 
+tar --list --file archive.tar 
+tar -tf archive.tar 
+tar tf archive.tar 
+
+Note: --file or -f or f should be end of your list of options 
+
+#create a tar file 
+tar --create --file archive.tar = tar cf archive.tar file1 
+
+#Add a file to the archive 
+tar --append --file archive.tar file2 = tar rf archive.tar file2 
+
+# Add a directory and it's contents to a tar archive 
+tar --create --file archive.tar pictures/
+tar --create --file archive.tar /home/aaron/pictures/
+
+tar --extract --file archive.tar = tar xf archive.tar 
+
+tar --extract --file archive.tar --directory /tmp/
+or 
+tar xf archive.tar -C /tmp/
+
+If we want to make sure all ownership permission information get restored exactly as it was, we can use sudo along 
+
+sudo tar --extract --file archive.tar --directory /tmp/
+
+#Compress and uncompress 
+gzip, bzip2 and xz 
+
+# below command will compress file1, file2, file3 and then automatically delete the original files after
+gzip file1 
+bzip2 file2 
+xz file3 
+
+#UnZip = original file1 will be created and file1.gz gets deleted
+gunzip file1.gz   = gzip --decompress file1.gz 
+bunzip file2.bz2  = bzip2 --decompress file2.bz2 
+unxz file3.xz     = xz --decompress file3.xz 
+
+gzip --keep file1 
+bzip2 --keep file2 
+xz --keep file3 
+
+#list contents of the compressed file 
+gzip --list file1 
+
+zip archive file1 = zip archive.zip file1 
+
+zip -r archive.zip pictures/
+
+unzip archive.zip 
+
+Note: gzip has no option to take a directory and jam it in a single archive 
+It cannot pack multiple files into a single file 
+
+Zip supports both packing and compression but utilities like gzip, bzip2 and xz don't do that. this is why they offen paired up with an additional utility 'tar'.
+
+tar --create --file archive.tar file1 
+gzip archive.tar 
+or
+tar --create --gzip --file archive.tar.gz == tar czf archive.tar.gz file1 
+tar --create --bzip2 --file archive.tar.bz == tar cjf archive.tar.bz
+tar --create --xz --file archive.tar.xz file1 == tar cJf archive.tar.xz file1 
+
+#tar has an option, it's the auto compress option to automatically figure out what compression utility to used based on the file name extension we choose for our archive 
+
+.gz will make it compressed with gzip 
+.bz will make it compressed with bzip2 
+.xz will make it with compressed with xz 
+
+tar --create --autocompress --file archive.tar.gz file1 
+or 
+tar caf archive.xz file1 
+
+# when unpacking and decompressing though, we don't have to tell tar what decompression utility to use.
+It can figure that out by itself
+
+tar --extract --file archive.tar.gz 
+or 
+tar xf archive.tar.gz
+
+#Backup files to a remote system 
+A popular tool to backup data is rsync, it's name originates from remote synchronization.
+
+rsync -a path_to_local directory username@ip_address:path_to_remote_directory
+-a is the archive option to mae sure ysync also sunchromizes subdirectories, file permission, modification times and so on.
+
+rsync -a Pictures/ aaron@9.9.9.9:/home/aaron/Picture/
+
+if you run this command a second time, rsync will only copy data that has changed and it will skip old data that's still up to date.
+
+rsync -a aaron@9.9.9.9:/home/aaron/Pictures/ Pictures/
+
+It's also worth noting that you can sync two local directories as well instead of one local and one remote 
+
+rsync -a Pictures/ Backups/Pictures/
+
+#instead of backing up files and directories, you might want to backup an entire disk or partition. 
+To do that you can use dd instead.
+
+Before saving a disk or partition image, you should unmount that disk or partition to make sure no data is being changed while you back it up.
+
+if = inputfile, of = outputfile, bs=blocksize, status=progress will show you the progress it's making
+sudo dd if=/dev/vda of=diskimage.raw bs=1M status=progress
+
+#restore a disk image from a file to a disk you just reverse the if and of labels
+sudo dd if = diskimage.raw of=/dev/vda bs=1M status=progress 
+
+Note: you should not run this command on your virtual machine because it's going to overwrite your virtual disk 
+
+# user input-output redirection
+sort file.txt 
+sort file.txt > sortedfile.txt 
+sort file.txt >> sortedfile.txt 
+
+> --> overwrite 
+>> --> append 
+
+date > file.txt  = date 1> file.txt 
+
+output is of two types
+1) normal text and data 
+2) error messgaes, warning messages or anything that signals that something went wrong in some way.
+
+<  --> stdin 
+1> --> stdout
+2> --> stderr 
+
+To redirect input 
+< file.txt 
+
+To redirect normal output 
+> file.txt or 1> file.txt 
+
+To redirect errors and warnings
+2> errors.txt 
+
+/dev/null, it's like the black hole of linux, what ever you send to /dev/null is simply discarded.
+grep -r '^The' /etc/ 2>/dev/null 
+
+grep -r '^The' /etc/ 1>output.txt 2>error.txt -- overwrite 
+grep -r '^The' /etc/ 1>>output.txt 2>>error.txt
+
+#normal output and error output in one file 
+grep -r '^The' /etc/ > all_output.txt 2>&1
+Note: 2>&1 has to be at the end 
+
+&1 signifies redirecting to standard out instead of a file.
+
+sendmail someone@example.com 
+Hi someone 
+How are you doing..
+...
+...
+Bye 
+
+or 
+sendmail someone@example.com < emailcontent.txt 
+
+sort <<EOF     Here document or heredoc
+>6
+> 3
+> 2
+> 5
+> 1
+> 4
+> EOF 
+1
+2
+3
+4
+5
+6
+
+We signal that input we want to pass ends before the last line where we type EOF 
+Any text can be used here instead of EOF which usually stands for End of File 
+
+There is also a similar varient called a here-string 
+It looks like this, using three of the less than signs 
+
+bc <<<1+2+3+4
+10
+with this we can pas a single line or string as input to our program
+
+#piping
+grep -V '^#' /etc/login.defs | sort 
+
+grep -V '^#' /etc/login.defs | sort | column -t 
+
+
+
+
+
+
+
+
 
 
 
