@@ -1,0 +1,95 @@
+#Boot reboot and shutdown a system safely
+
+#Reboot 
+sudo systemctl reboot 
+
+#Poweroff 
+sudo systemctl poweroff
+
+#Force reboot 
+sudo systemctl reboot --force 
+sudo systemctl reboot --force --force 
+
+#Force shutdown 
+sudo systemctl poweroff --force 
+sudo systemctl poweroff --force --force 
+
+Time is in 24hr format - 00:00 to 23:59
+sudo shutdown 02:00 
+
+#Shutdown after 15 minutes
+sudo shutdown +15
+
+#Reboot at 2:00 AM
+sudo shutdown -r 02:00
+
+#Reboot after 15 minutes 
+sudo shutdown -r +15
+
+sudo shutdown -r +1 "Scheduled restart to do an offline-backup of our database"
+
+#To find the default target
+sudo systemctl get-default
+
+#change the default target
+sudo systemctl set-default multi-user.target 
+sudo systemctl reboot 
+
+#switch to different target
+sudo systemctl isolate graphical.target 
+#Note: this doesn't change the default target
+#if we reboot it will take to the default target i.e multi-user.target
+
+#Other targets - if the root user password is not set, you can't use these targets
+# emergency target- root file system is mounted as read only
+sudo systemctl isolate emergency.target 
+
+sudo systemctl isolate rescue.target 
+
+#Install, configure and troubleshooting bootloader
+One of the first program that loads up when we power up a coputer, it's called a boot loader.
+one purpose of the boot loader is to start the linux kernal, which is the core part of the operating system.
+
+The most popular boot loader on linux is GRUB - grand unified boot loader.
+
+#Generate Grub configuration file
+#On a system configured to boot through BIOS like this one is, we would use a command that looks like this.
+-o is to write the configuration to specific file.
+grub2-mkconfig -o /boot/grub2/grub.cfg 
+
+#If you are on a system that uses EFI fr booting
+grub2-mkconfig -o /boot/efi/EFI/centos/grub.cfg
+
+#When a computer boots through BIOS mode,the computer looks for the boot loader at the very beginning of the disc.
+That means we need to place GRUB in that area, the first few sectors of that disc.
+
+First we need to know which disc we should install GRUB to.
+There is a command that will show us all the block devices.
+
+lsblk
+From the out put we can see that SDA1 is where the boot partition is installed on this particular machine
+So GRUB should be installed on the first sector of that disc.
+
+#Install GRUB
+grub2-install /dev/sda
+
+#System booting theough EFI, computers booting this way don't look for the boot loader on the first few sectors of a disc.
+so instead they are going to look for the boot loader in a file stored on a special boot partition
+
+#you can use below command to automatically place the boot loader files in their proper location.
+dnf reinstall grub2-efi grub2-efi-modules shim 
+
+#make some configuration changes to the grub boot loader 
+if we want to make changes to the settings for GRUB, there is a particular file that we can edit, and it requires root privilages to edit that file.
+
+sudo vim /etc/default/grub
+
+#Use scripting to automate system maintenance tasks
+
+#manage the startup process and services 
+
+systemctl edit --full sshd.service
+
+systemctl revert sshd.service 
+
+
