@@ -87,9 +87,57 @@ sudo vim /etc/default/grub
 #Use scripting to automate system maintenance tasks
 
 #manage the startup process and services 
+#Edit service file 
+sudo systemctl edit --full sshd.service
 
-systemctl edit --full sshd.service
+#Revert changes to service file 
+sudo systemctl revert sshd.service 
 
-systemctl revert sshd.service 
+#To see the status of the service 
+sudo systemctl status sshd.service 
+
+#To stop a service 
+sudo systemctl stop sshd.service 
+
+#To start a service 
+sudo systemctl start sshd.service 
+
+#Restart service 
+sudo systemctl restart sshd.service 
+
+#Reload service - not all applications supports reload 
+sudo systemctl reload sshd.service 
+
+sudo systemctl reload-or-restart sshd.service 
+
+#Disable automatic start up at boot time 
+sudo systemctl disable sshd.service 
+
+#Enable service 
+sudo systemctl enable sshd.service 
+
+#To check if service is enabled.
+sudo systemctl is-enabled sshd.service 
+
+#Enable and start 
+sudo systemctl enable --now sshd.service 
+
+sudo systemctl disable --now sshd.service 
+
+#Masking 
+sudo systemctl mask atd.service 
+
+sudo systemctl enable atd.service 
+sudo systemctl start atd.service 
+
+sudo systemctl unmask atd.service 
+
+#list all the services available
+sudo systemctl list-units --type service --all 
+
+#Create systemd services 
+
+
+
 
 
