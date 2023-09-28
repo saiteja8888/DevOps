@@ -137,7 +137,6 @@ sudo systemctl list-units --type service --all
 
 #Create systemd services 
 
-This is test line.
 
 
 
