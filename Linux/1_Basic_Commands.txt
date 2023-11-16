@@ -62,9 +62,9 @@ Inode: 52946177 Links: 1
 ln path_to_target path_to_link_file
 ln /home/aaron/Pictures/family_dog.jpg /home/jane/Pictures/family_dog.jpg 
 Note: You can only hard link to files and not to directories.
-You can alos only hard link to files on the same file system.
+You can also only hard link to files on the same file system.
 
-useradd -a -G family aaron 
+usermod -a -G family aaron 
 useradd -a -G jane 
 chmod 660 /home/aaron/Pictures/family_dog.jpg 
 
