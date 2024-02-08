@@ -1,0 +1,84 @@
+sudo docker version
+
+Run - Start a container
+-----------------------
+sudo docker run nginx
+sudo docker run -d -it --name test nginx 
+-i for interactive mode
+-t stands for pseudo terminal
+--name to specify a name
+-d to run in detach mode
+sudo docker run redis       --> latest tag
+sudo docker run redis:4.0   -->4.0(tag)
+
+run - attach and detach
+-----------------------
+docker run kodekloud/simple-webapp
+
+docker run -d kodekloud/simple-webapp  --> detach mode
+docker attach [container_id|container_name]  --> attach again
+
+ps - list containers
+--------------------
+sudo docker ps
+sudo docker ps -a
+
+inspect container
+-----------------
+sudo docker inspect [container_id|container_name]
+
+stop - stop a container
+-----------------------
+sudo docker ps [container_id|container_name]
+
+rm - remove a container
+-----------------------
+sudo docker rm [container_id|container_name]....
+
+images - List images
+--------------------
+sudo docker images
+
+rmi - remove images
+-------------------
+sudo docker rmi nginx
+
+pull - download an image
+------------------------
+sudo docker pull nginx
+
+sudo docker run ubuntu - exits immediately
+sudo docer run ubuntu sleep 5
+sudo docker run -it ubuntu bash
+
+execute command on running container
+------------------------------------
+sudo docker exec [container_id|container_name] [command]
+sudo docker exec 1ed cat /etc/hosts
+
+run - port mapping
+------------------
+sudo docker run -p 80:5000 kodekoud/webapp
+80 is localhost port
+5000 is docker port
+
+run - volume mapping
+--------------------
+sudo docker run -v /opt/datadir:/var/lib/mysql mysql
+/opt/datadir --> localhost storage location
+/var/lib/mysql --> docker storage location
+storage is persistent
+
+container logs
+--------------
+sudo docker logs [container_id|container_name]
+
+
+
+
+
+
+
+
+
+

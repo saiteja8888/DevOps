@@ -1,0 +1,73 @@
+How to create my own image - flask app
+--------------------------
+1. OS - ubuntu
+2. update apt repo
+3. install dependencies using apt
+4. install python dependecies using pip
+5. copy source code to /opt folder
+6. run the web server using 'flask' command
+
+Dockerfile
+----------
+FROM Ubuntu
+
+RUN apt-get update && apt-get -y install python
+
+RUN pip install flask flask-sql
+
+COPY . /opt/source-code
+
+ENTRYPOINT FLASK_APP=/opt/source-code/app.py flask run
+------------------------------------
+docker build Dockerfile -t saiteja/my-custom-app
+-t --> provide a tag
+
+Push docker image to docker hub
+---------------------------------
+docker login
+
+docker push saiteja/my-custom-app
+
+Environment variables
+---------------------
+color = os.environ.get('APP_COLOR')
+docker run -e APP_COLOR=blue -d simple-webapp-color
+docker run -e APP_COLOR=red -d simple-webapp-color
+
+How to find environment variable set on a running container
+--------------------------------------
+docker inspect container_id
+check under config section, you will find the list of env variables set on the container
+
+Commands vs Entrypoint
+----------------------
+CMD command param1        CMD sleep 5
+CMD ["command","param1"]  CMD ["sleep","5"]
+docker run sleeper sleep 10
+
+ENTRYPOINT["sleep"]  --> Whatever you specify on the command line in this case, it will get appended to the entry point
+
+docker run sleeper 10
+
+In case of CMD instruction, the command line parameters passed will get replaced entirely, wheras in case of entry point, the command line parameters will get appended.
+
+docker run sleeper --> will give an error
+
+ENTRYPOINT ["sleep']
+CMD ["5"]
+docker run sleeper --> will sleep for 5 sec
+
+docker run sleeper 10 --> will sleep for 10sec
+
+Modify entrypoint during runtime
+--------------------------------
+docker run --entrypoint sleep2.o ubuntu-sleeper 10 --> here sleep2.o is an imaginary command.
+
+
+
+
+
+
+
+
+
