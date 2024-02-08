@@ -1,0 +1,163 @@
+docker run mmumshad/simple-webapp
+docker run mongodb
+docker run redis:alpine
+docker run ansible
+
+docker-compose.yml
+------------------
+services:
+  web:
+    image: "mmumshad/simple-webapp"
+  database:
+    image: "mongodb"
+  messaging:
+    image: "redis:alpine"
+  orchestration:
+    image: "ansible"
+
+docker-compose up
+
+-------------------------------------------
+sudo docker run -d --name=redis redis
+sudo docker run -d --name=db postgres:9.4
+sudo docker run -d --name=vote -p 5000:80 --link redis:redis voting-app
+sudo docker run -d --name=result -p 5001:80 --link db:db result-app
+sudo docker run -d --name=worker --link db:db --link redis:redis worker
+
+Note: redis:redis container:host_name
+Note: redis:redis == redis
+
+docker-compose.yml
+------------------
+redis:
+  image:redis
+
+db:
+  image:postgres:9.4
+
+vote:
+  image:voting-app
+  ports:
+    - 5000:80
+  links:
+    - redis
+
+result:
+  image:result-app
+    - 50001:80
+  links:
+    - db
+worker:
+  image:worker
+  links:
+    - redis
+    - db
+-----------------------
+docker-compose up
+
+docker-compose - build
+-----------------------
+
+redis:
+  image:redis
+
+db:
+  image:postgres:9.4
+
+vote:
+  build: ./vote
+  ports:
+    - 5000:80
+  links:
+    - redis
+
+result:
+  build: ./result
+    - 50001:80
+  links:
+    - db
+worker:
+  build: ./worker
+  links:
+    - redis
+    - db
+
+Docker compose -versions
+-------------------------
+
+version-1 (default bridge network)
+---------
+redis:
+  image: redis
+db:
+  image: postres:9.4
+vote:
+  image: voting-app
+  ports:
+    - 5000:80
+  links:
+    - redis
+
+version-2 (dedicated bridge network, start up order)
+---------
+version: 2
+services:
+  redis:
+    image: redis
+    networks:
+      - back-end
+  db:
+    image: postres:9.4 
+    networks:
+      - back-end
+  vote:
+    image: voting-app
+    ports:
+      - 5000:80
+    depends_on:
+      - redis
+    networks:
+      - front-end
+      - back-end
+networks:
+  front-end:
+  back-end:
+
+version-3(similar to version2,support for docker swarm)
+-----------------------------------------------------
+version: 3
+services:
+  redis:
+    image: redis
+  db:
+    image: postres:9.4 
+  vote:
+    image: voting-app
+    ports:
+      - 5000:80
+
+Docker compose install
+----------------------
+sudo apt-get update
+sudo apt-get install docker-compose-plugin
+
+
+sudo docker compose version
+
+update compose
+---------------
+sudo apt-get update
+sudo apt-get install docker-compose-plugin
+
+References
+-----------
+https://docs.docker.com/compose/
+
+https://docs.docker.com/engine/reference/commandline/compose/
+
+https://github.com/dockersamples/example-voting-app
+
+
+
+
+
