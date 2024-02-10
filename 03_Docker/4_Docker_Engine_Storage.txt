@@ -1,0 +1,20 @@
+docker -H=remote-docker-engine:2375 run nginx
+
+docker volume create data_volume
+docker run -v data_volume:/var/lib/mysql mysql
+docker run -v /data/mysql:/var/lib/mysql mysql
+
+data run --mount type=bind, source=/data/mysql, target=/var/lib/mysql mysql
+
+https://docs.docker.com/storage/
+
+https://docs.docker.com/storage/storagedriver/
+
+https://docs.docker.com/storage/volumes/
+
+docker network create \
+	--drive bridge \
+	--subnet 182.18.0.0/16 custom-isolated network
+
+docker network ls
+
